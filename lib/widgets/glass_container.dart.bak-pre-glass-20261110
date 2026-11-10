@@ -1,0 +1,129 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+
+/// 白金面板容器 — 固态白底 + 金色描边（非毛玻璃）
+///
+/// 统一为「近纯白面板 + 淡金色边框 + 轻柔阴影」风格：
+/// 白色 0.95 填充 + 金色 0.25 描边。
+/// [tintColor] 可覆盖默认白色填充。
+class GlassContainer extends StatelessWidget {
+  final Widget child;
+  final double borderRadius;
+  final BorderRadius? customRadius;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final double? width;
+  final double? height;
+  final Color? tintColor;
+
+  const GlassContainer({
+    super.key,
+    required this.child,
+    this.borderRadius = 12,
+    this.customRadius,
+    this.padding,
+    this.margin,
+    this.width,
+    this.height,
+    this.tintColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bgColor = tintColor ?? Colors.white.withOpacity(0.95);
+    final borderColor = const Color(0x40B8860B); // 金色 0.25
+    final radius = customRadius ?? BorderRadius.circular(borderRadius);
+
+    return Container(
+      width: width,
+      height: height,
+      margin: margin,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: radius,
+        border: Border.all(color: borderColor, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+/// 白金底部弹窗
+class GlassBottomSheet extends StatelessWidget {
+  final Widget child;
+  final double borderRadius;
+
+  const GlassBottomSheet({
+    super.key,
+    required this.child,
+    this.borderRadius = 20,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadius)),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.97),
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(borderRadius)),
+          border: const Border(
+            top: BorderSide(color: Color(0x40B8860B), width: 1), // 金色 0.25
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                height: 4,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFB8860B),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            child,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 白金顶栏背景 — 用作 AppBar 的 flexibleSpace，呈现纯白顶栏
+class GlassAppBarBackground extends StatelessWidget {
+  const GlassAppBarBackground({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Color(0x1AB8860B), width: 1), // 金色 0.10
+        ),
+      ),
+    );
+  }
+}

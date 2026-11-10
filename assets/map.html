@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>高德地图</title>
+    <style>
+        html, body, #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=462eed53db0bb0afdf1a368c69a23884"></script>
+<script>
+    var map = null;
+    var markers = {};
+    var currentInfoWindow = null;
+
+    function initMap() {
+        map = new AMap.Map('container', {
+            zoom: 12,
+            center: [121.4737, 31.2304]
+        });
+        map.plugin('AMap.Geolocation', function() {
+            var geolocation = new AMap.Geolocation({
+                enableHighAccuracy: true,
+                timeout: 10000,
+                buttonPosition: 'RB',
+                buttonOffset: new AMap.Pixel(10, 20),
+                zoomToAccuracy: true
+            });
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition(function(status, result) {
+                if (status === 'complete') {
+                    map.setCenter([result.position.lng, result.position.lat]);
+                }
+            });
+        });
+        map.on('longpress', function(e) {
+            var lnglat = e.lnglat;
+            window.flutter_inappwebview.callHandler('onLongPress', lnglat.lng, lnglat.lat);
+        });
+        map.on('click', function(e) {
+            if (e.target && e.target.id) {
+                window.flutter_inappwebview.callHandler('onMarkerClick', e.target.id);
+            }
+        });
+    }
+
+    function updateMarkers(data) {
+        for (var id in markers) {
+            map.remove(markers[id]);
+        }
+        markers = {};
+        for (var i = 0; i < data.length; i++) {
+            var place = data[i];
+            var marker = new AMap.Marker({
+                position: [place.lng, place.lat],
+                title: place.name,
+                id: place.id,
+                label: { content: place.name, offset: new AMap.Pixel(0, -10) }
+            });
+            marker.on('click', function(e) {
+                if (currentInfoWindow) currentInfoWindow.close();
+                var info = new AMap.InfoWindow({
+                    content: '<div style="padding:5px;"><strong>' + e.target.getTitle() + '</strong><br>' + place.address + '</div>',
+                    offset: new AMap.Pixel(0, -30)
+                });
+                info.open(map, e.target.getPosition());
+                currentInfoWindow = info;
+                window.flutter_inappwebview.callHandler('onMarkerClick', e.target.id);
+            });
+            markers[place.id] = marker;
+            map.add(marker);
+        }
+    }
+
+    function addPlace(place) {
+        var marker = new AMap.Marker({
+            position: [place.lng, place.lat],
+            title: place.name,
+            id: place.id,
+            label: { content: place.name, offset: new AMap.Pixel(0, -10) }
+        });
+        marker.on('click', function(e) {
+            if (currentInfoWindow) currentInfoWindow.close();
+            var info = new AMap.InfoWindow({
+                content: '<div style="padding:5px;"><strong>' + e.target.getTitle() + '</strong><br>' + place.address + '</div>',
+                offset: new AMap.Pixel(0, -30)
+            });
+            info.open(map, e.target.getPosition());
+            currentInfoWindow = info;
+            window.flutter_inappwebview.callHandler('onMarkerClick', e.target.id);
+        });
+        markers[place.id] = marker;
+        map.add(marker);
+    }
+
+    window.onload = function() {
+        initMap();
+    };
+</script>
+</body>
+</html>

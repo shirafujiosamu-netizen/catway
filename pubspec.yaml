@@ -1,0 +1,66 @@
+name: anime_map_app
+description: 猫径CatWay - 二次元地图App
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+  # UI 相关
+  image_picker: ^1.0.7
+  http_parser: ^4.0.0
+  image_cropper: ^5.0.0
+
+  # 网络请求
+  dio: ^5.4.0
+
+  # 状态管理
+  provider: ^6.1.1
+
+  # 本地存储
+  shared_preferences: ^2.2.2
+  share_plus: ^7.0.0
+  
+  package_info_plus: ^4.0.0
+  url_launcher: ^6.1.0
+
+  # 高德地图
+  amap_flutter_map: ^3.0.0
+  amap_flutter_base: ^3.0.0
+
+  # 定位
+  geolocator: ^10.1.1
+  permission_handler: ^10.4.5
+
+  # 备用地图
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/map.html
+    - assets/icons/shop.png
+    - assets/icons/cafe.png
+    - assets/icons/gacha.png
+    - assets/icons/card.png
+    - assets/icons/popup.png
+    - assets/icons/restaurant.png
+    - assets/icons/boardgame.png
+    - assets/icons/badge.png
+    # 以下图片暂时缺失，注释掉以避免警告，后续下载后取消注释
+    # - assets/icons/lolita.png
+    # - assets/icons/hanfu.png
+    # - assets/icons/jk.png
+    # - assets/icons/default.png
